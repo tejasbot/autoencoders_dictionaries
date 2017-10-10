@@ -40,7 +40,12 @@ if __name__ =="__main__":
                     W0 = W
 
                     Y_diff_init = numpy.dot(W_T, X_test) - Y_test
-                    Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_final), axis = 0)))/Y_test.shape[1]
+                    Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_init), axis = 0)))/Y_test.shape[1]
+
+                    W_final, final_norm = grad_descent(W, X, Y, k, eta, delta, epsilon_i, threshold, max_iter)
+                    print "Final Gradient Norm: ",final_norm
+
+                    
                     W_final_norm_T = normc(numpy.transpose(W_final))
                     Y_diff_final = numpy.dot(W_final_norm_T, X_test) - Y_test
                     Y_diff_final_norm[i,j] = Y_diff_final_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_final), axis = 0)))/Y_test.shape[1]
