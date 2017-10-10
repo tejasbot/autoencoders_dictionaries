@@ -15,8 +15,6 @@ def generate_sparse_matrix(h, k, num_points, _low, _high):
     return X
 
 def data_generation(n, h, k, num_datapoints, m1):
-    import ipdb
-    ipdb.set_trace()
     A_star = numpy.random.randn(n, h)
     A_star = normc(A_star)
     
@@ -33,8 +31,8 @@ def data_generation(n, h, k, num_datapoints, m1):
 
     X_train = generate_sparse_matrix(h, k, num_train, _low, _high)
     X_test = generate_sparse_matrix(h, k, num_test, _low, _high)
-    Y_train = A_star * X_train
-    Y_test = A_star * X_test
+    Y_train = numpy.dot(A_star, X_train)
+    Y_test = numpy.dot(A_star, X_test)
 
     m2 = var_x_star + m1^2
 
