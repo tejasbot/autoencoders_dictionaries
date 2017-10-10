@@ -19,3 +19,4 @@ def grad(W, X, Y, k, epsilon_i):
             grad_mat[supp[i],:] = grad_mat[supp[i], :] + numpy.transpose(squared_loss_grad)
 
     grad_mat = 1/N * grad_mat
+    return grad_mat
