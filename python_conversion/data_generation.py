@@ -22,18 +22,12 @@ def data_generation(n, h, k, num_datapoints, m1):
     coherence = numpy.max(numpy.abs(coherence_mat - numpy.eye(h)), axis = None)/ numpy.sqrt(n)
     num_test = int(numpy.ceil(0.05 * num_datapoints));
     num_train = num_datapoints - num_test
-
-    var_x_star = 1/256
-
-    
     _low = h**2/(h**NU_2)
     _high = h**2
-
     X_train = generate_sparse_matrix(h, k, num_train, _low, _high)
     X_test = generate_sparse_matrix(h, k, num_test, _low, _high)
     Y_train = numpy.dot(A_star, X_train)
     Y_test = numpy.dot(A_star, X_test)
 
-    m2 = var_x_star + m1^2
 
-    return (X_train, Y_train, X_test, Y_test, A_star, coherence, m2)
+    return (X_train, Y_train, X_test, Y_test, A_star, coherence)
