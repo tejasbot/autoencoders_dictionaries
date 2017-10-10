@@ -25,3 +25,37 @@ if __name__ =="__main__":
             for u in range(0,A_reps):
                 var = data_generation(n, _h, k, num_datapoints, m1)
             
+                delta = 0.8
+                eta = 0.9
+                epsilon_i = 1/2 * numpy.absolute(ml) *k * (delta + coherence)
+                threshold = 1e-8
+                max_iter = 100
+
+                for v in range(0, W_reps):
+                    init_delta = 15.0
+                    [W, W_T] = initialize_W(A_star, init_delta)
+                    [W, W_T] = initialize_W_random(A_star)
+
+                    W0 = W
+
+                    Y_diff_init = numpy.dot(W_T, X_test) - Y_test
+                    Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_final), axis = 0)))/Y_test.shape[1]
+                    diff = numpy.transpose(W_final) - A_star
+                    diff_norm = numpy.zeros((A_star.shape[1], 1))
+
+                    for t in range(0, diff.shape[1]):
+                        diff_norm[t] = numpy.linalg.norm(diff[:,t], axis = 1)
+
+                    init_diff = numpy.transpose(W0) - A_star
+                    init_diff_norm = numpy.zeros((A_star.shape[1], 1))
+
+                    for t in range(0, init_diff.shape[1]):
+                        init_diff_norm[t] = numpy.linalg.norm(init_diff[:,t], axis = 1)
+
+
+            Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] / numpy.dot(W_reps, A_reps)
+            Y_diff_final_norm[i,j] = Y_diff_final_norm[i,j] / numpy.dot(W_reps, A_reps)
+
+
+    numpy.savetxt("Y_diff_init_norm.csv", Y_diff_init_norm, delimiter = "|")
+    numpy.savetxt("Y_diff_final_norm.csv", Y_diff_final_norm, delimiter = "|")
