@@ -1,6 +1,8 @@
 import numpy
 from data_generation import data_generation
-
+from matlab_functions import *
+from initialize import *
+from grad_descent import *
 
 if __name__ =="__main__":
     import ipdb
@@ -16,30 +18,33 @@ if __name__ =="__main__":
     W_reps = 3
     A_reps = 3
 
-    for _h in H:
-        for p in P:
+    for (i,_h) in enumerate(H):
+        for (j,p) in enumerate(P):
             k = int(numpy.ceil(_h**p))
             m1 = -1 * _h ** (-1.5)
             print "Hidden Dimension: ", _h
 
             for u in range(0,A_reps):
-                var = data_generation(n, _h, k, num_datapoints, m1)
-            
+                X, Y, X_test, Y_test, A_star, coherence = data_generation(n, _h, k, num_datapoints, m1)
+                
                 delta = 0.8
                 eta = 0.9
-                epsilon_i = 1/2 * numpy.absolute(ml) *k * (delta + coherence)
+                epsilon_i = 1/2 * numpy.absolute(m1) *k * (delta + coherence)
                 threshold = 1e-8
                 max_iter = 100
 
                 for v in range(0, W_reps):
                     init_delta = 15.0
-                    [W, W_T] = initialize_W(A_star, init_delta)
-                    [W, W_T] = initialize_W_random(A_star)
-
+                    W, W_T = initialize_W(A_star, init_delta)
+                    W, W_T = initialize_W_random(A_star)
                     W0 = W
 
                     Y_diff_init = numpy.dot(W_T, X_test) - Y_test
                     Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_final), axis = 0)))/Y_test.shape[1]
+                    W_final_norm_T = normc(numpy.transpose(W_final))
+                    Y_diff_final = numpy.dot(W_final_norm_T, X_test) - Y_test
+                    Y_diff_final_norm[i,j] = Y_diff_final_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_final), axis = 0)))/Y_test.shape[1]
+                    
                     diff = numpy.transpose(W_final) - A_star
                     diff_norm = numpy.zeros((A_star.shape[1], 1))
 

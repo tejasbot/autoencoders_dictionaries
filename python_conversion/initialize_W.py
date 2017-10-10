@@ -6,4 +6,4 @@ def initialize_W(A, delta):
     dW = numpy.dot(delta, normc(dW))
     W_T = A + dW
     W= numpy.transpose(W_T)
-    return (W, W_T)
+    return W, W_T

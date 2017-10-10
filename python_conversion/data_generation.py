@@ -30,4 +30,4 @@ def data_generation(n, h, k, num_datapoints, m1):
     Y_test = numpy.dot(A_star, X_test)
 
 
-    return (X_train, Y_train, X_test, Y_test, A_star, coherence)
+    return X_train, Y_train, X_test, Y_test, A_star, coherence

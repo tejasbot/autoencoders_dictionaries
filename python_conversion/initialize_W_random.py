@@ -8,4 +8,4 @@ def initialize_W_random(A):
     W_T = A + dW
     W = numpy.transpose(W_T)
 
-    return (W, W_T)
+    return W, W_T
