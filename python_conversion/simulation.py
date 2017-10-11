@@ -8,7 +8,7 @@ if __name__ =="__main__":
 #    import ipdb
 #    ipdb.set_trace()
     n = 50
-    num_datapoints = 10
+    num_datapoints = 1000
     H = [256]
     P = [0.2]
     
@@ -30,17 +30,17 @@ if __name__ =="__main__":
             for u in range(0,A_reps):
                 X, Y, X_test, Y_test, A_star, coherence = data_generation(n, _h, k, num_datapoints, _low, _high)
                 
-                eta = 0.9
+                eta = 0.5
                 import ipdb
                 ipdb.set_trace() 
                 epsilon_i = 1./2 * numpy.absolute((_high + _low)/2) *k * (delta + coherence)
                 threshold = 1e-8
-                max_iter = 100
+                max_iter = 10
 
                 for v in range(0, W_reps):
                     init_delta = 15.0
-#                    W, W_T = initialize_W(A_star, init_delta)
-                    W, W_T = initialize_W_random(A_star)
+                    W, W_T = initialize_W(A_star,2*delta)
+#                    W, W_T = initialize_W_random(A_star)
                     W0 = W
 
                     Y_diff_init = numpy.dot(W_T, X_test) - Y_test
@@ -69,9 +69,9 @@ if __name__ =="__main__":
                         init_diff_norm[t] = numpy.linalg.norm(init_diff[:,t], axis = 1)
 
 
-            Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] / numpy.dot(W_reps, A_reps)
-            Y_diff_final_norm[i,j] = Y_diff_final_norm[i,j] / numpy.dot(W_reps, A_reps)
+#            Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] / numpy.dot(W_reps, A_reps)
+#            Y_diff_final_norm[i,j] = Y_diff_final_norm[i,j] / numpy.dot(W_reps, A_reps)
 
 
-    numpy.savetxt("Y_diff_init_norm.csv", Y_diff_init_norm, delimiter = "|")
-    numpy.savetxt("Y_diff_final_norm.csv", Y_diff_final_norm, delimiter = "|")
+#    numpy.savetxt("Y_diff_init_norm.csv", Y_diff_init_norm, delimiter = "|")
+#    numpy.savetxt("Y_diff_final_norm.csv", Y_diff_final_norm, delimiter = "|")

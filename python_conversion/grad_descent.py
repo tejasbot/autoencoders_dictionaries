@@ -26,8 +26,8 @@ from matlab_functions import *
 
 
 def grad_no_support(W, X, Y, k, delta, epsilon_i):
-    import ipdb
-    ipdb.set_trace() 
+#    import ipdb
+#    ipdb.set_trace() 
     print "computing gradient"
     h = W.shape[0]
     n = Y.shape[0]
