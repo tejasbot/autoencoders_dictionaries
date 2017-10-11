@@ -5,10 +5,10 @@ from initialize import *
 from grad_descent import *
 
 if __name__ =="__main__":
-    import ipdb
-    ipdb.set_trace()
+#    import ipdb
+#    ipdb.set_trace()
     n = 50
-    num_datapoints = 500
+    num_datapoints = 10
     H = [256]
     P = [0.2]
     
@@ -17,33 +17,37 @@ if __name__ =="__main__":
     
     W_reps = 3
     A_reps = 3
-
+    theta = 0.0001
     for (i,_h) in enumerate(H):
         for (j,p) in enumerate(P):
             k = int(numpy.ceil(_h**p))
-            m1 = -1 * _h ** (-1.5)
+            _high = _h ** ((1-p)/2 - theta)
+            _low = _high/ (_h**(p + theta))
+            delta = 1/ (_h**(2*p + theta))
+            
             print "Hidden Dimension: ", _h
 
             for u in range(0,A_reps):
-                X, Y, X_test, Y_test, A_star, coherence = data_generation(n, _h, k, num_datapoints, m1)
+                X, Y, X_test, Y_test, A_star, coherence = data_generation(n, _h, k, num_datapoints, _low, _high)
                 
-                delta = 0.8
                 eta = 0.9
-                epsilon_i = 1/2 * numpy.absolute(m1) *k * (delta + coherence)
+                import ipdb
+                ipdb.set_trace() 
+                epsilon_i = 1./2 * numpy.absolute((_high + _low)/2) *k * (delta + coherence)
                 threshold = 1e-8
                 max_iter = 100
 
                 for v in range(0, W_reps):
                     init_delta = 15.0
-                    W, W_T = initialize_W(A_star, init_delta)
+#                    W, W_T = initialize_W(A_star, init_delta)
                     W, W_T = initialize_W_random(A_star)
                     W0 = W
 
                     Y_diff_init = numpy.dot(W_T, X_test) - Y_test
                     Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_init), axis = 0)))/Y_test.shape[1]
 
-                    import ipdb
-                    ipdb.set_trace() 
+#                    import ipdb
+#                    ipdb.set_trace() 
                     W_final, final_norm = grad_descent(W, X, Y, k, eta, delta, epsilon_i, threshold, max_iter)
                     print "Final Gradient Norm: ",final_norm
 
