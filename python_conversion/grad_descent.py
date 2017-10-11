@@ -36,16 +36,18 @@ def grad_no_support(W, X, Y, k, delta, epsilon_i):
     for data_index in range(0, N):
         print "data index:", data_index
         y = numpy.matrix(Y[:, data_index]).transpose()
-
+        x = X[:, data_index]
+        support = numpy.argwhere(x != 0).ravel().tolist()
+        
         #computing \Sum_{j=]}^h ReLU(W_j^T - \epsilon_j)W_j - y
         _sum = 0
-        for j in range(0, h):
+        for j in support: #range(0, h):
             scalar = numpy.max([0 , numpy.dot(W[j,:], y) - epsilon_i])
             _sum += numpy.matrix(scalar*numpy.transpose(W[j,:])).transpose()
         _sum -= y
 
         
-        for i in range(0, h):
+        for i in support: #range(0, h):
             scalar_term = numpy.array(1.0* ((numpy.dot(W[i,:], y) - epsilon_i)>0)).squeeze()
             square_term = scalar_term * numpy.eye(n) + numpy.dot(y, numpy.matrix(W[i,:]))
             grad_mat[i, :] += numpy.array(numpy.dot(scalar_term * square_term, _sum)).ravel()
