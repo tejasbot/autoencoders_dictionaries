@@ -9,7 +9,7 @@ if __name__ =="__main__":
     ipdb.set_trace()
     n = 50
     num_datapoints = 500
-    H = [8]
+    H = [256]
     P = [0.2]
     
     Y_diff_init_norm = numpy.zeros((len(H), len(P)))
@@ -42,6 +42,8 @@ if __name__ =="__main__":
                     Y_diff_init = numpy.dot(W_T, X_test) - Y_test
                     Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_init), axis = 0)))/Y_test.shape[1]
 
+                    import ipdb
+                    ipdb.set_trace() 
                     W_final, final_norm = grad_descent(W, X, Y, k, eta, delta, epsilon_i, threshold, max_iter)
                     print "Final Gradient Norm: ",final_norm
 
