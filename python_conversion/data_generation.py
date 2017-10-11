@@ -21,8 +21,8 @@ def data_generation(n, h, k, num_datapoints, _low, _high):
     coherence = numpy.max(numpy.absolute(coherence_mat - numpy.eye(h)), axis = None)/ numpy.sqrt(n)
     num_test = int(numpy.ceil(0.05 * num_datapoints));
     num_train = num_datapoints - num_test
-    import ipdb
-    ipdb.set_trace()
+#    import ipdb
+#    ipdb.set_trace()
 
     X_train = generate_sparse_matrix(h, k, num_train, _low, _high)
     X_test = generate_sparse_matrix(h, k, num_test, _low, _high)

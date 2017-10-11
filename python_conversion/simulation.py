@@ -5,15 +5,13 @@ from initialize import *
 from grad_descent import *
 
 if __name__ =="__main__":
-#    import ipdb
-#    ipdb.set_trace()
     n = 50
     num_datapoints = 1000
     H = [256]
     P = [0.2]
     
-    Y_diff_init_norm = numpy.zeros((len(H), len(P)))
-    Y_diff_final_norm = numpy.zeros((len(H), len(P)))
+#    Y_diff_init_norm = numpy.zeros((len(H), len(P)))
+#    Y_diff_final_norm = numpy.zeros((len(H), len(P)))
     
     W_reps = 3
     A_reps = 3
@@ -31,30 +29,26 @@ if __name__ =="__main__":
                 X, Y, X_test, Y_test, A_star, coherence = data_generation(n, _h, k, num_datapoints, _low, _high)
                 
                 eta = 0.5
-                import ipdb
-                ipdb.set_trace() 
                 epsilon_i = 1./2 * numpy.absolute((_high + _low)/2) *k * (delta + coherence)
                 threshold = 1e-8
-                max_iter = 10
+                max_iter = 100
 
                 for v in range(0, W_reps):
-                    init_delta = 15.0
+#                    init_delta = 15.0
                     W, W_T = initialize_W(A_star,2*delta)
 #                    W, W_T = initialize_W_random(A_star)
                     W0 = W
 
-                    Y_diff_init = numpy.dot(W_T, X_test) - Y_test
-                    Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_init), axis = 0)))/Y_test.shape[1]
+#                    Y_diff_init = numpy.dot(W_T, X_test) - Y_test
+#                    Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_init), axis = 0)))/Y_test.shape[1]
 
-#                    import ipdb
-#                    ipdb.set_trace() 
                     W_final, final_norm = grad_descent(W, X, Y, k, eta, delta, epsilon_i, threshold, max_iter)
                     print "Final Gradient Norm: ",final_norm
 
                     
-                    W_final_norm_T = normc(numpy.transpose(W_final))
-                    Y_diff_final = numpy.dot(W_final_norm_T, X_test) - Y_test
-                    Y_diff_final_norm[i,j] = Y_diff_final_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_final), axis = 0)))/Y_test.shape[1]
+#                    W_final_norm_T = normc(numpy.transpose(W_final))
+#                    Y_diff_final = numpy.dot(W_final_norm_T, X_test) - Y_test
+#                    Y_diff_final_norm[i,j] = Y_diff_final_norm[i,j] + numpy.sum(numpy.sqrt(numpy.sum(numpy.square(Y_diff_final), axis = 0)))/Y_test.shape[1]
                     
                     diff = numpy.transpose(W_final) - A_star
                     diff_norm = numpy.zeros((A_star.shape[1], 1))
