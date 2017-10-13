@@ -48,9 +48,10 @@ def grad_no_support(W, X, Y, k, delta, epsilon_i):
 
         
         for i in support: #range(0, h):
-            scalar_term = numpy.array(1.0* ((numpy.dot(W[i,:], y) - epsilon_i)>0)).squeeze()
+            scalar_term = numpy.dot(W[i,:], y) - epsilon_i
+#            scalar_term_threshold = numpy.array(1.0* ((scalar_term)>0)).squeeze()
             square_term = scalar_term * numpy.eye(n) + numpy.dot(y, numpy.matrix(W[i,:]))
-            grad_mat[i, :] += numpy.array(numpy.dot(scalar_term * square_term, _sum)).ravel()
+            grad_mat[i, :] += numpy.array(numpy.dot(square_term, _sum)).ravel()
 
     grad_mat = 1./N * grad_mat
     return grad_mat
