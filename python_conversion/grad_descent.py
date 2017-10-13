@@ -54,7 +54,35 @@ def grad_no_support(W, X, Y, k, delta, epsilon_i):
     grad_mat = 1./N * grad_mat
     return grad_mat
 
-    
+
+def grad(W, X, Y, k, delta, epsilon_i):
+#    import ipdb
+#    ipdb.set_trace() 
+    h = W.shape[0]
+    n = Y.shape[0]
+    N = Y.shape[1]
+    grad_mat = numpy.zeros((h, n))
+    for data_index in range(0, N):
+        y = numpy.matrix(Y[:, data_index]).transpose()
+        x = X[:, data_index]
+#        support = numpy.argwhere(x != 0).ravel().tolist()
+        
+        #computing \Sum_{j=]}^h ReLU(W_j^T - \epsilon_j)W_j - y
+        _sum = 0
+        for j in range(0, h):
+            scalar = numpy.max([0 , numpy.dot(W[j,:], y) - epsilon_i])
+            _sum += numpy.matrix(scalar*numpy.transpose(W[j,:])).transpose()
+        _sum -= y
+
+        
+        for i in range(0, h):
+            scalar_term = numpy.array(numpy.dot(W[i,:], y) - epsilon_i).squeeze()
+            scalar_term_threshold = numpy.array(1.0* ((scalar_term)>0)).squeeze()
+            square_term = scalar_term * numpy.eye(n) + numpy.dot(y, numpy.matrix(W[i,:]))
+            grad_mat[i, :] += numpy.array(numpy.dot(scalar_term_threshold * square_term, _sum)).ravel()
+
+    grad_mat = 1./N * grad_mat
+    return grad_mat
 
 
 def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter):
@@ -63,11 +91,11 @@ def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter):
     _iter = 0
 
     while _iter < max_iter:
-        print "iteration: ", _iter
         
         grad_mat = grad_no_support(W,X,Y,k, delta, epsilon_i)
         grad_norm[_iter] = numpy.linalg.norm(grad_mat, 'fro', None)
         W = W - numpy.dot(eta, grad_mat)
+        print "iteration: ", _iter, " norm: ", grad_norm[_iter]
 
         if _iter == 1:
             if grad_norm[_iter] > grad_norm[1]:
