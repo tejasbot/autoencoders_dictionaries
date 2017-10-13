@@ -35,7 +35,11 @@ if __name__ =="__main__":
 
                 for v in range(0, W_reps):
 #                    init_delta = 15.0
-                    W, W_T = initialize_W(A_star,2*delta)
+
+#                    import ipdb
+#                    ipdb.set_trace()
+                    
+                    W, W_T = initialize_W(A_star,1.5*delta)
 #                    W, W_T = initialize_W_random(A_star)
                     W0 = W
 
