@@ -7,7 +7,7 @@ from grad_descent import *
 if __name__ =="__main__":
     n = 50
     num_datapoints = 1000
-    H = [256]
+    H = [8192*2]
     P = [0.2]
     
 #    Y_diff_init_norm = numpy.zeros((len(H), len(P)))
@@ -15,7 +15,7 @@ if __name__ =="__main__":
     
     W_reps = 3
     A_reps = 3
-    theta = 0.0001
+    theta = 0.5
     for (i,_h) in enumerate(H):
         for (j,p) in enumerate(P):
             k = int(numpy.ceil(_h**p))
@@ -28,18 +28,18 @@ if __name__ =="__main__":
             for u in range(0,A_reps):
                 X, Y, X_test, Y_test, A_star, coherence = data_generation(n, _h, k, num_datapoints, _low, _high)
                 
-                eta = 0.5
-                epsilon_i = 1./2 * numpy.absolute((_high + _low)/2) *k * (delta + coherence)
+                eta = 0.1
+                epsilon_i = 1e-10#1./2 * numpy.absolute((_high + _low)/2) *k * (delta + coherence)
                 threshold = 1e-8
-                max_iter = 100
+                max_iter = 500
 
                 for v in range(0, W_reps):
 #                    init_delta = 15.0
 
-#                    import ipdb
-#                    ipdb.set_trace()
+                    import ipdb
+                    ipdb.set_trace()
                     
-                    W, W_T = initialize_W(A_star,1.5*delta)
+                    W, W_T = initialize_W(A_star,16000*delta)
 #                    W, W_T = initialize_W_random(A_star)
                     W0 = W
 
@@ -57,16 +57,19 @@ if __name__ =="__main__":
                     diff = numpy.transpose(W_final) - A_star
                     diff_norm = numpy.zeros((A_star.shape[1], 1))
 
+                    ipdb.set_trace()
                     for t in range(0, diff.shape[1]):
-                        diff_norm[t] = numpy.linalg.norm(diff[:,t], axis = 1)
+                        diff_norm[t] = numpy.linalg.norm(diff[:,t])
 
                     init_diff = numpy.transpose(W0) - A_star
                     init_diff_norm = numpy.zeros((A_star.shape[1], 1))
 
                     for t in range(0, init_diff.shape[1]):
-                        init_diff_norm[t] = numpy.linalg.norm(init_diff[:,t], axis = 1)
+                        init_diff_norm[t] = numpy.linalg.norm(init_diff[:,t])
 
 
+                    print max(diff_norm), max(init_diff_norm)
+                    ipdb.set_trace()
 #            Y_diff_init_norm[i,j] = Y_diff_init_norm[i,j] / numpy.dot(W_reps, A_reps)
 #            Y_diff_final_norm[i,j] = Y_diff_final_norm[i,j] / numpy.dot(W_reps, A_reps)
 
