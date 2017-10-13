@@ -16,8 +16,8 @@ if __name__ == "__main__":
     num_datapoints = 1000
     n = 50
     
-    import ipdb
-    ipdb.set_trace()
+#    import ipdb
+#    ipdb.set_trace()
     
     grad_vector = numpy.zeros((len(H), len(delta_multipliers)+1))
     
@@ -40,11 +40,11 @@ if __name__ == "__main__":
 
                 grad_norm = numpy.linalg.norm(gradient, 'fro', None)
 
-                print "Grad norm for h:{h}, delta_multiplier: {d}, trial: {trial} = {grad_norm}".format(h=str(h), delta = str(d), trial=str(trial), grad_norm = grad_norm)
+                print "Grad norm for h:{h}, delta_multiplier: {d}, trial: {trial} = {grad_norm}".format(h=str(h), d = str(d), trial=str(trial), grad_norm = grad_norm)
 
-                grad_norm[index_h, index_delta] += grad_norm
+                grad_vector[index_h, index_delta] += grad_norm
 
 
-    grad_norm = grad_norm/no_trials
+    grad_vector = grad_vector/no_trials
 
                 
