@@ -3,6 +3,7 @@ from data_generation import data_generation
 from matlab_functions import *
 from initialize import *
 from grad_descent import *
+import json
 
 if __name__ =="__main__":
     n = 100
@@ -45,6 +46,13 @@ if __name__ =="__main__":
 
                 final_diff_norm = calc_maxdiffnorm(numpy.transpose(W_final), A_star)
                 init_diff_norm = calc_maxdiffnorm(numpy.transpose(W0), A_star)
+
+                result = {'h': _h, 'p': p, 'diff_norm': diff_norm.tolist(), 'init_diff_norm': init_diff_norm, 'final_diff_norm': final_diff_norm}
+
+                fname = 'h-' + str(_h) + '_p-' + str(p) + '_u-' + str(u)
+                print fname
+                with open(fname, 'w') as outf: 
+                    json.dump(result, outf)
                 
                 print final_diff_norm, init_diff_norm
                 ipdb.set_trace()

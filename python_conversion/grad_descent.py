@@ -130,8 +130,7 @@ def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_
 
 #    import ipdb
 #    ipdb.set_trace() 
-    final_norm = grad_norm[numpy.where(grad_norm > 0)]
-    final_norm = final_norm[-1]
+    final_norm = grad_norm[-1]
     W_final = W
 #    ipdb.set_trace() 
     return W_final, final_norm, diff_norm
