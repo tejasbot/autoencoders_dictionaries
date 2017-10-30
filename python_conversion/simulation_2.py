@@ -43,8 +43,10 @@ if __name__ == "__main__":
                 print "Grad norm for h:{h}, delta_multiplier: {d}, trial: {trial} = {grad_norm}".format(h=str(h), d = str(d), trial=str(trial), grad_norm = grad_norm)
 
                 grad_vector[index_h, index_delta] += grad_norm
-
-
+                
+                
     grad_vector = grad_vector/no_trials
-
+    print grad_vector
+    import ipdb
+    ipdb.set_trace() 
                 
