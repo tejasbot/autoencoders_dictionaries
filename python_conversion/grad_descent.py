@@ -88,10 +88,10 @@ def grad(W, X, Y, k, delta, epsilon_i):
 def calc_maxdiffnorm(A, B):
     assert A.shape == B.shape
     _diff = A - B
-    diffnorm = numpy.zeros((A.shape[1], 1))
+    diffnorm = numpy.zeros((A.shape[1], ))
     for t in range(0, A.shape[1]):
         diffnorm[t] = numpy.linalg.norm(_diff[:,t])
-    return max(diffnorm, axis = None)
+    return max(diffnorm)
 
 def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_star):
     grad_norm = numpy.zeros((max_iter, 1))
@@ -104,7 +104,7 @@ def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_
         grad_mat = grad(W,X,Y,k, delta, epsilon_i)
         grad_norm[_iter] = numpy.linalg.norm(grad_mat, 'fro', None)
         W = W - numpy.dot(eta, grad_mat)
-        diff_norm[_iter] = calc_maxdiffnorm(numpy.transpose(W), A_star)
+        diff_norm[_iter] = numpy.linalg.norm(numpy.transpose(W)- A_star)
         
         print "iteration: ", _iter, " norm: ", grad_norm[_iter] 
         print "diff_norm: ", diff_norm[_iter]
