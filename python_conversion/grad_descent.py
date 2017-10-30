@@ -85,18 +85,27 @@ def grad(W, X, Y, k, delta, epsilon_i):
     return grad_mat
 
 
-def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter):
+def calc_maxdiffnorm(A, B):
+    assert A.shape == B.shape
+    _diff = A - B
+    diffnorm = numpy.zeros((A.shape[1], 1))
+    for t in range(0, A.shape[1]):
+        diffnorm[t] = numpy.linalg.norm(_diff[:,t])
+    return max(diffnorm, axis = None)
+
+def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_star):
     grad_norm = numpy.zeros((max_iter, 1))
     W = W_init
     _iter = 0
 
     while _iter < max_iter:
         
-        grad_mat = grad_no_support(W,X,Y,k, delta, epsilon_i)
+        grad_mat = grad(W,X,Y,k, delta, epsilon_i)
         grad_norm[_iter] = numpy.linalg.norm(grad_mat, 'fro', None)
         W = W - numpy.dot(eta, grad_mat)
         print "iteration: ", _iter, " norm: ", grad_norm[_iter]
-
+         
+        print "diff_norm: ", calc_maxdiffnorm(numpy.transpose(W), A_star)
         if _iter == 1:
             if grad_norm[_iter] > grad_norm[1]:
                 print "Reducing learning rate and restarting "
