@@ -17,6 +17,7 @@ def main():
     parser.add_argument('--optimization_method', default = 'sgd')
     parser.add_argument('--d', default=50, type = int)
     parser.add_argument('--batch_size_percentage', default = 0.05, type = float)
+    parser.add_argument('--max_iter', default = 2000, type = int)
     args = parser.parse_args()
 
     n = args.n
@@ -26,7 +27,7 @@ def main():
     optimization_method = args.optimization_method
     initd = args.d
     batch_size_percentage = args.batch_size_percentage
-    
+    max_iter = args.max_iter
 #    n = 100
 #    num_datapoints = 1000
 #    H = [1024]
@@ -52,7 +53,7 @@ def main():
     eta = 0.5
     epsilon_i = 1./3 * numpy.absolute((_high + _low)/2) *k * (delta + coherence)
     threshold = 1e-3
-    max_iter = 2500
+    
     
     print "Hidden Dimension: ", _h
 
