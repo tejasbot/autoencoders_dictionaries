@@ -92,6 +92,25 @@ def sgd(W, X, Y, k, delta, epsilon_i, batch_size_percentage = 0.1):
     return grad_mat
 
 
+def adam(W, X, Y, k, delta, epsilon_i, eta, _iter, batch_size_percentage = 0.1):
+    beta1 = 0.9
+    beta2 = 0.999
+    epsilon = 1e-8
+    alpha = 0.001
+
+    if _iter == 1:
+        m = 0
+        v = 0
+    else:
+        grad_mat = sgd(W, X, Y, k, delta, epsilon_i, batch_size_percentage = batch_size_percentage)
+        m = beta1 * m + (1-beta1) * grad_mat
+        v = beta2 * v + (1-beta2) * numpy.multiply(grad_mat, grad_mat)
+        mhat = m / (1-beta1**_iter)
+        vhat = v / (1-beta2**_iter)
+        W = W - alpha/(numpy.sqrt(numpy.linalg.norm(vhat.ravel())) + epsilon) * mhat
+
+    return grad_mat, W
+
 def calc_maxdiffnorm(A, B):
     assert A.shape == B.shape
     _diff = A - B
@@ -109,26 +128,29 @@ def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_
     while _iter < max_iter:
         if optimization_method == 'regular': 
             grad_mat = grad(W,X,Y,k, delta, epsilon_i)
+            W = W - numpy.dot(eta, grad_mat)
         elif optimization_method == 'sgd' and batch_size_percentage!=0:
             grad_mat = sgd(W, X, Y, k, delta, epsilon_i, batch_size_percentage = batch_size_percentage)
+            W = W - numpy.dot(eta, grad_mat)
+        elif optimization_method == 'adam' and batch_size_percentage!=0:
+            grad_mat, W = adam(W, X, Y, k, delta, epsilon_i, eta, _iter, batch_size_percentage = batch_size_percentage)
         else:
             return None 
         grad_norm[_iter] = numpy.linalg.norm(grad_mat, 'fro', None)
-        W = W - numpy.dot(eta, grad_mat)
         diff_norm[_iter] = numpy.linalg.norm(numpy.transpose(W)- A_star)
         
         print "iteration: ", _iter, " norm: ", grad_norm[_iter] 
         print "diff_norm: ", diff_norm[_iter]
-        
-        if _iter == 1:
-            if grad_norm[_iter] > grad_norm[1]:
-                print "Reducing learning rate and restarting "
-                eta = eta/3
-                W = W_init
-                _iter = -1
-                grad_norm = numpy.zeros((max_iter, 1))
 
         if optimization_method == 'regular':
+            if _iter == 1:
+                if grad_norm[_iter] > grad_norm[1]:
+                    print "Reducing learning rate and restarting "
+                    eta = eta/3
+                    W = W_init
+                    _iter = -1
+                    grad_norm = numpy.zeros((max_iter, 1))
+
             if _iter > 1:
                 if grad_norm[_iter] > grad_norm[_iter -1]:
                     print "changing learning rate"
