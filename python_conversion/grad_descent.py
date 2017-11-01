@@ -55,14 +55,14 @@ def grad_no_support(W, X, Y, k, delta, epsilon_i):
     return grad_mat
 
 
-def grad(W, X, Y, k, delta, epsilon_i):
-#    import ipdb
-#    ipdb.set_trace() 
+def grad(W, X, Y, k, delta, epsilon_i, data_points = []):
     h = W.shape[0]
     n = Y.shape[0]
     N = Y.shape[1]
     grad_mat = numpy.zeros((h, n))
-    for data_index in range(0, N):
+    if not len(data_points):
+        data_points = range(0, N)
+    for data_index in data_points:
         y = numpy.matrix(Y[:, data_index]).transpose()
         x = X[:, data_index]
 #        support = numpy.argwhere(x != 0).ravel().tolist()
@@ -81,7 +81,14 @@ def grad(W, X, Y, k, delta, epsilon_i):
             square_term = scalar_term * numpy.eye(n) + numpy.dot(y, numpy.matrix(W[i,:]))
             grad_mat[i, :] += numpy.array(numpy.dot(scalar_term_threshold * square_term, _sum)).ravel()
 
-    grad_mat = 1./N * grad_mat
+    grad_mat = 1./len(data_points) * grad_mat
+    return grad_mat
+
+
+def sgd(W, X, Y, k, delta, epsilon_i, batch_size_percentage = 0.1):
+    data_count = int(min([Y.shape[1], numpy.rint(batch_size_percentage * Y.shape[1])]))
+    data_points = numpy.random.choice(range(0, Y.shape[1]), data_count)
+    grad_mat = grad(W, X, Y, k, delta, epsilon_i, data_points = data_points)
     return grad_mat
 
 
@@ -93,15 +100,19 @@ def calc_maxdiffnorm(A, B):
         diffnorm[t] = numpy.linalg.norm(_diff[:,t])
     return max(diffnorm)
 
-def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_star):
+def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_star, optimization_method = 'regular', batch_size_percentage = 0.1):
     grad_norm = numpy.zeros((max_iter, 1))
     diff_norm = numpy.zeros((max_iter, 1))
     W = W_init
     _iter = 0
 
     while _iter < max_iter:
-        
-        grad_mat = grad(W,X,Y,k, delta, epsilon_i)
+        if optimization_method == 'regular': 
+            grad_mat = grad(W,X,Y,k, delta, epsilon_i)
+        elif optimization_method == 'sgd' and batch_size_percentage!=0:
+            grad_mat = sgd(W, X, Y, k, delta, epsilon_i, batch_size_percentage = batch_size_percentage)
+        else:
+            return None 
         grad_norm[_iter] = numpy.linalg.norm(grad_mat, 'fro', None)
         W = W - numpy.dot(eta, grad_mat)
         diff_norm[_iter] = numpy.linalg.norm(numpy.transpose(W)- A_star)
@@ -117,10 +128,11 @@ def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_
                 _iter = -1
                 grad_norm = numpy.zeros((max_iter, 1))
 
-        if _iter > 1:
-            if grad_norm[_iter] > grad_norm[_iter -1]:
-                print "changing learning rate"
-                eta = eta/3
+        if optimization_method == 'regular':
+            if _iter > 1:
+                if grad_norm[_iter] > grad_norm[_iter -1]:
+                    print "changing learning rate"
+                    eta = eta/3
 
         if _iter > 0:
             if grad_norm[_iter] <= grad_norm[0] * threshold:
