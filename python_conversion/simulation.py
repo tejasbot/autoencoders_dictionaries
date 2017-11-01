@@ -11,12 +11,12 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--n', default=100, type = int)
-    parser.add_argument('--num_datapoints', default = 1000, type = int)
+    parser.add_argument('--num_datapoints', default = 5000, type = int)
     parser.add_argument('--h', default = 256, type = int)
     parser.add_argument('--p', default = 0.1, type = float)
     parser.add_argument('--optimization_method', default = 'sgd')
     parser.add_argument('--d', default=50, type = int)
-    parser.add_argument('--batch_size_percentage', default = 0.1, type = float)
+    parser.add_argument('--batch_size_percentage', default = 0.05, type = float)
     args = parser.parse_args()
 
     n = args.n
@@ -52,7 +52,7 @@ def main():
     eta = 0.5
     epsilon_i = 1./3 * numpy.absolute((_high + _low)/2) *k * (delta + coherence)
     threshold = 1e-3
-    max_iter = 300
+    max_iter = 2500
     
     print "Hidden Dimension: ", _h
 
