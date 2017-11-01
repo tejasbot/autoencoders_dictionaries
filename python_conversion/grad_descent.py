@@ -93,20 +93,17 @@ def sgd(W, X, Y, k, delta, epsilon_i, batch_size_percentage = 0.1):
 
 
 def adam(W, X, Y, k, delta, epsilon_i, eta, _iter,m,v, batch_size_percentage = 0.1):
+
     beta1 = 0.9
     beta2 = 0.999
     epsilon = 1e-8
     alpha = 0.001
 
-    if _iter == 0:
-        m = 0
-        v = 0
-
     grad_mat = sgd(W, X, Y, k, delta, epsilon_i, batch_size_percentage = batch_size_percentage)
     m = beta1 * m + (1-beta1) * grad_mat
     v = beta2 * v + (1-beta2) * numpy.multiply(grad_mat, grad_mat)
-    mhat = m / (1-beta1**_iter)
-    vhat = v / (1-beta2**_iter)
+    mhat = m / (1-beta1**(_iter+1))
+    vhat = v / (1-beta2**(_iter+1))
     W = W - alpha/(numpy.sqrt(numpy.linalg.norm(vhat.ravel())) + epsilon) * mhat
 
     return grad_mat, W, m, v
@@ -133,6 +130,9 @@ def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_
             grad_mat = sgd(W, X, Y, k, delta, epsilon_i, batch_size_percentage = batch_size_percentage)
             W = W - numpy.dot(eta, grad_mat)
         elif optimization_method == 'adam' and batch_size_percentage!=0:
+            if _iter == 0:
+                m = 0
+                v = 0
             grad_mat, W, m, v = adam(W, X, Y, k, delta, epsilon_i, eta, _iter, m,v,batch_size_percentage = batch_size_percentage)
         else:
             return None 
