@@ -62,7 +62,7 @@ def main():
         W, W_T = initialize_W(A_star,initd*delta)
         W0 = W
 
-        W_final, final_norm, diff_norm = grad_descent(W, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_star, optimization_method='sgd', batch_size_percentage = batch_size_percentage)
+        W_final, final_norm, diff_norm = grad_descent(W, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_star, optimization_method=optimization_method, batch_size_percentage = batch_size_percentage)
         print "Final Gradient Norm: ",final_norm
         
 
