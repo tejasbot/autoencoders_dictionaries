@@ -92,7 +92,7 @@ def sgd(W, X, Y, k, delta, epsilon_i, batch_size_percentage = 0.1):
     return grad_mat
 
 
-def adam(W, X, Y, k, delta, epsilon_i, eta, _iter, batch_size_percentage = 0.1):
+def adam(W, X, Y, k, delta, epsilon_i, eta, _iter,m,v, batch_size_percentage = 0.1):
     beta1 = 0.9
     beta2 = 0.999
     epsilon = 1e-8
@@ -109,7 +109,7 @@ def adam(W, X, Y, k, delta, epsilon_i, eta, _iter, batch_size_percentage = 0.1):
     vhat = v / (1-beta2**_iter)
     W = W - alpha/(numpy.sqrt(numpy.linalg.norm(vhat.ravel())) + epsilon) * mhat
 
-    return grad_mat, W
+    return grad_mat, W, m, v
 
 def calc_maxdiffnorm(A, B):
     assert A.shape == B.shape
@@ -133,7 +133,7 @@ def grad_descent(W_init, X, Y, k, eta, delta, epsilon_i, threshold, max_iter, A_
             grad_mat = sgd(W, X, Y, k, delta, epsilon_i, batch_size_percentage = batch_size_percentage)
             W = W - numpy.dot(eta, grad_mat)
         elif optimization_method == 'adam' and batch_size_percentage!=0:
-            grad_mat, W = adam(W, X, Y, k, delta, epsilon_i, eta, _iter, batch_size_percentage = batch_size_percentage)
+            grad_mat, W, m, v = adam(W, X, Y, k, delta, epsilon_i, eta, _iter, m,v,batch_size_percentage = batch_size_percentage)
         else:
             return None 
         grad_norm[_iter] = numpy.linalg.norm(grad_mat, 'fro', None)
