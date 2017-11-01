@@ -98,7 +98,7 @@ def adam(W, X, Y, k, delta, epsilon_i, eta, _iter, batch_size_percentage = 0.1):
     epsilon = 1e-8
     alpha = 0.001
 
-    if _iter == 1:
+    if _iter == 0:
         m = 0
         v = 0
     else:
