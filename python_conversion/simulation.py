@@ -70,7 +70,7 @@ def main():
 
         result = {'h': _h, 'p': p, 'diff_norm': diff_norm.tolist(), 'init_diff_norm': init_diff_norm, 'final_diff_norm': final_diff_norm}
 
-        fname = 'h-{h}_p-{p}_u-{u}_initdelta-{initd}_opt-{opt}.json'.format(h=h, p=p, u=u, initd = initd, opt = optimization_method)     
+        fname = 'h-{h}_p-{p}_u-{u}_initdelta-{initd}_opt-{opt}.json'.format(h=_h, p=p, u=u, initd = initd, opt = optimization_method)     
         print fname
         with open(fname, 'w') as outf: 
             json.dump(result, outf)
